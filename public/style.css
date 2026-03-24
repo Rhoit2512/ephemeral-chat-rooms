@@ -638,6 +638,57 @@ input::placeholder { color: var(--text-muted); }
     background: var(--surface-hover);
 }
 
+/* ===========================
+   Auth Tabs & Copy Button
+=========================== */
+.auth-tabs {
+    display: flex;
+    background: rgba(0,0,0,0.3);
+    border-radius: 16px;
+    padding: 6px;
+    margin-bottom: 24px;
+}
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.tab-btn.active {
+    background: var(--surface-hover);
+    color: var(--text);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.copy-code-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 6px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 8px;
+}
+.copy-code-btn:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--text);
+}
+.copy-code-btn.copied {
+    color: var(--success);
+    border-color: var(--success);
+    background: rgba(107,224,158,0.1);
+}
+
 @media (max-width: 768px) {
     .chat-layout {
         position: relative;

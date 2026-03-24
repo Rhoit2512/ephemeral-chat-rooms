@@ -19,20 +19,25 @@
         <!-- ====== JOIN SCREEN ====== -->
         <div id="join-screen" class="screen active">
             <div class="card">
+                <div class="auth-tabs">
+                    <button type="button" class="tab-btn active" data-tab="create">Create Room</button>
+                    <button type="button" class="tab-btn" data-tab="join">Join Room</button>
+                </div>
+                
                 <div class="card-icon">💬</div>
-                <h1>Join a Room</h1>
-                <p class="subtitle">Enter a nickname and a room code to connect.</p>
+                <h1 id="auth-title">Create a Room</h1>
+                <p class="subtitle" id="auth-subtitle">Get a secret code to share with your friends.</p>
                 <div id="join-alert" class="alert hidden"></div>
                 <form id="join-form">
                     <div class="field">
                         <label for="join-nickname">Nickname</label>
                         <input type="text" id="join-nickname" placeholder="What should we call you?" required autocomplete="off">
                     </div>
-                    <div class="field">
+                    <div class="field" id="roomcode-field" style="display: none;">
                         <label for="join-roomcode">Room Code</label>
-                        <input type="text" id="join-roomcode" placeholder="Enter a secret room code" required autocomplete="off">
+                        <input type="text" id="join-roomcode" placeholder="Enter a secret room code" autocomplete="off">
                     </div>
-                    <button type="submit" class="btn btn-primary" id="join-btn">Join Chat</button>
+                    <button type="submit" class="btn btn-primary" id="join-btn">Create & Join</button>
                 </form>
             </div>
         </div>
@@ -67,7 +72,13 @@
                             <button id="mobile-menu-btn" class="mobile-menu-btn" title="Toggle Sidebar">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                             </button>
-                            <strong><span id="topbar-room-name"># General</span></strong> <span class="status-dot"></span> <span id="online-count" class="online-count">0 online</span>
+                            <div style="display:flex; align-items:center;">
+                                <strong><span id="topbar-room-name"># General</span></strong> 
+                                <button type="button" id="copy-code-btn" class="copy-code-btn" title="Copy Room Code">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                </button>
+                            </div>
+                            <span class="status-dot"></span> <span id="online-count" class="online-count">0 online</span>
                         </div>
                         <div class="ephem-badge">⏱ Session ends on disconnect</div>
                     </div>

@@ -10,6 +10,13 @@ const joinNickname = document.getElementById('join-nickname');
 const joinRoomCode = document.getElementById('join-roomcode');
 const joinAlert    = document.getElementById('join-alert');
 
+// ---- Auth Tabs ----
+const tabBtns = document.querySelectorAll('.tab-btn');
+const authTitle = document.getElementById('auth-title');
+const authSubtitle = document.getElementById('auth-subtitle');
+const roomcodeField = document.getElementById('roomcode-field');
+const joinBtn = document.getElementById('join-btn');
+
 // ---- Chat ----
 const sidebarUsername = document.getElementById('sidebar-username');
 const sidebarAvatar   = document.getElementById('sidebar-avatar');
@@ -50,16 +57,49 @@ function hideAlert(el) {
 }
 
 // ===========================
-//   Join Room
+//   Join & Create Room
 // ===========================
+let originalJoinMode = 'create'; // default
+
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        originalJoinMode = btn.dataset.tab;
+
+        if (originalJoinMode === 'create') {
+            authTitle.textContent = 'Create a Room';
+            authSubtitle.textContent = 'Get a secret code to share with your friends.';
+            roomcodeField.style.display = 'none';
+            joinRoomCode.removeAttribute('required');
+            joinBtn.textContent = 'Create & Join';
+        } else {
+            authTitle.textContent = 'Join a Room';
+            authSubtitle.textContent = 'Enter a room code to connect.';
+            roomcodeField.style.display = 'block';
+            joinRoomCode.setAttribute('required', 'true');
+            joinBtn.textContent = 'Join Chat';
+        }
+        hideAlert(joinAlert);
+    });
+});
+
+function generateRoomCode() {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
 joinForm.addEventListener('submit', (e) => {
     e.preventDefault();
     hideAlert(joinAlert);
 
     const nickname = joinNickname.value.trim();
-    const roomCode = joinRoomCode.value.trim();
+    let roomCode = joinRoomCode.value.trim();
 
-    if (!nickname || !roomCode) return showAlert(joinAlert, 'Please enter a nickname and room code.');
+    if (originalJoinMode === 'create') {
+        roomCode = generateRoomCode();
+    }
+
+    if (!nickname || !roomCode) return showAlert(joinAlert, 'Please enter all fields.');
 
     const btn = document.getElementById('join-btn');
     btn.disabled = true;
@@ -232,6 +272,21 @@ if (mobileMenuBtn && sidebar) {
             if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
                 sidebar.classList.remove('show');
             }
+        }
+    });
+}
+
+// ===========================
+//   Copy Code Button
+// ===========================
+const copyCodeBtn = document.getElementById('copy-code-btn');
+if (copyCodeBtn) {
+    copyCodeBtn.addEventListener('click', () => {
+        if (currentRoom) {
+            navigator.clipboard.writeText(currentRoom).then(() => {
+                copyCodeBtn.classList.add('copied');
+                setTimeout(() => copyCodeBtn.classList.remove('copied'), 2000);
+            }).catch(err => console.error('Copy failed', err));
         }
     });
 }
