@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ephemeral Chat</title>
+    <title>Ephemeral Chat Rooms</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -16,51 +16,24 @@
 
     <div class="app-container">
 
-        <!-- ====== LOGIN SCREEN ====== -->
-        <div id="login-screen" class="screen active">
+        <!-- ====== JOIN SCREEN ====== -->
+        <div id="join-screen" class="screen active">
             <div class="card">
                 <div class="card-icon">💬</div>
-                <h1>Welcome Back</h1>
-                <p class="subtitle">Login to join the live chat session.</p>
-                <div id="login-alert" class="alert hidden"></div>
-                <form id="login-form">
+                <h1>Join a Room</h1>
+                <p class="subtitle">Enter a nickname and a room code to connect.</p>
+                <div id="join-alert" class="alert hidden"></div>
+                <form id="join-form">
                     <div class="field">
-                        <label for="login-username">User ID</label>
-                        <input type="text" id="login-username" placeholder="Enter your username" required autocomplete="off">
+                        <label for="join-nickname">Nickname</label>
+                        <input type="text" id="join-nickname" placeholder="What should we call you?" required autocomplete="off">
                     </div>
                     <div class="field">
-                        <label for="login-password">Password</label>
-                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                        <label for="join-roomcode">Room Code</label>
+                        <input type="text" id="join-roomcode" placeholder="Enter a secret room code" required autocomplete="off">
                     </div>
-                    <button type="submit" class="btn btn-primary" id="login-btn">Login</button>
+                    <button type="submit" class="btn btn-primary" id="join-btn">Join Chat</button>
                 </form>
-                <p class="switch-text">Don't have an account? <a href="#" id="go-to-register">Register here</a></p>
-            </div>
-        </div>
-
-        <!-- ====== REGISTER SCREEN ====== -->
-        <div id="register-screen" class="screen hidden">
-            <div class="card">
-                <div class="card-icon">🔐</div>
-                <h1>Create Account</h1>
-                <p class="subtitle">Register a permanent ID and password to access the chat.</p>
-                <div id="register-alert" class="alert hidden"></div>
-                <form id="register-form">
-                    <div class="field">
-                        <label for="reg-username">Choose a User ID</label>
-                        <input type="text" id="reg-username" placeholder="Pick a unique username" required autocomplete="off">
-                    </div>
-                    <div class="field">
-                        <label for="reg-password">Create Password</label>
-                        <input type="password" id="reg-password" placeholder="Minimum 6 characters" required>
-                    </div>
-                    <div class="field">
-                        <label for="reg-confirm">Confirm Password</label>
-                        <input type="password" id="reg-confirm" placeholder="Re-enter your password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="register-btn">Create Account</button>
-                </form>
-                <p class="switch-text">Already have an account? <a href="#" id="go-to-login">Login here</a></p>
             </div>
         </div>
 
@@ -70,12 +43,12 @@
                 <!-- Sidebar -->
                 <aside class="sidebar">
                     <div class="sidebar-header">
-                        <div class="app-logo">💬 Chat</div>
+                        <div class="app-logo">💬 Chat Rooms</div>
                     </div>
                     <div class="sidebar-room">
                         <div class="room-item active">
                             <span class="room-icon">🌐</span>
-                            <span>General</span>
+                            <span id="sidebar-room-name">Room Name</span>
                         </div>
                     </div>
                     <div class="sidebar-footer">
@@ -90,20 +63,25 @@
                 <!-- Main Chat Area -->
                 <main class="chat-main">
                     <div class="chat-topbar">
-                        <div><strong># General</strong> <span class="status-dot"></span> <span id="online-count" class="online-count">0 online</span></div>
+                        <div class="topbar-left">
+                            <button id="mobile-menu-btn" class="mobile-menu-btn" title="Toggle Sidebar">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                            </button>
+                            <strong><span id="topbar-room-name"># General</span></strong> <span class="status-dot"></span> <span id="online-count" class="online-count">0 online</span>
+                        </div>
                         <div class="ephem-badge">⏱ Session ends on disconnect</div>
                     </div>
 
                     <div class="messages-area" id="messages-area">
                         <div class="welcome-msg">
                             <div class="welcome-icon">🔒</div>
-                            <p>This is an ephemeral session. Messages are not stored. Once you disconnect, your session ends.</p>
+                            <p>This is a live session. Messages are not stored. Once you disconnect, your session ends.</p>
                         </div>
                     </div>
 
                     <div class="chat-input-bar">
                         <form id="chat-form">
-                            <input type="text" id="message-input" placeholder="Type a message in #general..." required autocomplete="off">
+                            <input type="text" id="message-input" placeholder="Type a message..." required autocomplete="off">
                             <button type="submit" class="btn btn-send">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
                             </button>

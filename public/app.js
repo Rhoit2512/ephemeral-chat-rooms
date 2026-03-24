@@ -1,58 +1,42 @@
 const socket = io();
 
 // ---- Screen references ----
-const loginScreen    = document.getElementById('login-screen');
-const registerScreen = document.getElementById('register-screen');
-const chatScreen     = document.getElementById('chat-screen');
+const joinScreen = document.getElementById('join-screen');
+const chatScreen = document.getElementById('chat-screen');
 
-// ---- Login form ----
-const loginForm      = document.getElementById('login-form');
-const loginUsername  = document.getElementById('login-username');
-const loginPassword  = document.getElementById('login-password');
-const loginAlert     = document.getElementById('login-alert');
-
-// ---- Register form ----
-const registerForm   = document.getElementById('register-form');
-const regUsername    = document.getElementById('reg-username');
-const regPassword    = document.getElementById('reg-password');
-const regConfirm     = document.getElementById('reg-confirm');
-const registerAlert  = document.getElementById('register-alert');
+// ---- Join form ----
+const joinForm     = document.getElementById('join-form');
+const joinNickname = document.getElementById('join-nickname');
+const joinRoomCode = document.getElementById('join-roomcode');
+const joinAlert    = document.getElementById('join-alert');
 
 // ---- Chat ----
-const sidebarUsername   = document.getElementById('sidebar-username');
-const sidebarAvatar     = document.getElementById('sidebar-avatar');
-const btnLogout         = document.getElementById('btn-logout');
-const messagesArea      = document.getElementById('messages-area');
-const chatForm          = document.getElementById('chat-form');
-const messageInput      = document.getElementById('message-input');
-const onlineCount       = document.getElementById('online-count');
+const sidebarUsername = document.getElementById('sidebar-username');
+const sidebarAvatar   = document.getElementById('sidebar-avatar');
+const sidebarRoomName = document.getElementById('sidebar-room-name');
+const topbarRoomName  = document.getElementById('topbar-room-name');
+const btnLogout       = document.getElementById('btn-logout');
+const messagesArea    = document.getElementById('messages-area');
+const chatForm        = document.getElementById('chat-form');
+const messageInput    = document.getElementById('message-input');
+const onlineCount     = document.getElementById('online-count');
 
 let currentUser = null;
+let currentRoom = null;
 
 // ===========================
 //   Screen navigation
 // ===========================
 function showScreen(name) {
-    [loginScreen, registerScreen, chatScreen].forEach(s => {
+    [joinScreen, chatScreen].forEach(s => {
         s.classList.remove('active');
         s.classList.add('hidden');
     });
     const target = document.getElementById(name + '-screen');
     target.classList.remove('hidden');
+    target.offsetWidth; // trigger reflow for animation
     target.classList.add('active');
 }
-
-document.getElementById('go-to-register').addEventListener('click', (e) => {
-    e.preventDefault();
-    hideAlert(loginAlert);
-    showScreen('register');
-});
-
-document.getElementById('go-to-login').addEventListener('click', (e) => {
-    e.preventDefault();
-    hideAlert(registerAlert);
-    showScreen('login');
-});
 
 // ===========================
 //   Alert helpers
@@ -66,95 +50,68 @@ function hideAlert(el) {
 }
 
 // ===========================
-//   Register
+//   Join Room
 // ===========================
-registerForm.addEventListener('submit', (e) => {
+joinForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    hideAlert(registerAlert);
+    hideAlert(joinAlert);
 
-    const username = regUsername.value.trim();
-    const password = regPassword.value.trim();
-    const confirm  = regConfirm.value.trim();
+    const nickname = joinNickname.value.trim();
+    const roomCode = joinRoomCode.value.trim();
 
-    if (!username || !password || !confirm) return showAlert(registerAlert, 'All fields are required.');
-    if (password.length < 6)               return showAlert(registerAlert, 'Password must be at least 6 characters.');
-    if (password !== confirm)              return showAlert(registerAlert, 'Passwords do not match.');
+    if (!nickname || !roomCode) return showAlert(joinAlert, 'Please enter a nickname and room code.');
 
-    const btn = document.getElementById('register-btn');
+    const btn = document.getElementById('join-btn');
     btn.disabled = true;
-    btn.textContent = 'Creating account...';
+    btn.textContent = 'Joining...';
 
-    socket.emit('register', { username, password }, (res) => {
+    socket.emit('join_room', { nickname, roomCode }, (res) => {
         btn.disabled = false;
-        btn.textContent = 'Create Account';
-        if (res.success) {
-            showAlert(registerAlert, '✔ Account created! Redirecting to login...', 'success');
-            regUsername.value = '';
-            regPassword.value = '';
-            regConfirm.value  = '';
-            setTimeout(() => { hideAlert(registerAlert); showScreen('login'); }, 2000);
-        } else {
-            showAlert(registerAlert, res.message);
-        }
-    });
-});
-
-// ===========================
-//   Login
-// ===========================
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    hideAlert(loginAlert);
-
-    const username = loginUsername.value.trim();
-    const password = loginPassword.value.trim();
-
-    if (!username || !password) return showAlert(loginAlert, 'Please enter your username and password.');
-
-    const btn = document.getElementById('login-btn');
-    btn.disabled = true;
-    btn.textContent = 'Logging in...';
-
-    socket.emit('login', { username, password }, (res) => {
-        btn.disabled = false;
-        btn.textContent = 'Login';
+        btn.textContent = 'Join Chat';
         if (res.success) {
             currentUser = res.username;
+            currentRoom = res.room;
+
             sidebarUsername.textContent = res.username;
             sidebarAvatar.textContent = res.username.charAt(0).toUpperCase();
-            loginUsername.value = '';
-            loginPassword.value = '';
+            
+            sidebarRoomName.textContent = res.room;
+            topbarRoomName.textContent = `# ${res.room}`;
+
+            joinNickname.value = '';
+            joinRoomCode.value = '';
             showScreen('chat');
         } else {
-            showAlert(loginAlert, res.message);
+            showAlert(joinAlert, res.message);
         }
     });
 });
 
 // ===========================
-//   Logout / Disconnect
+//   Leave / Disconnect
 // ===========================
 btnLogout.addEventListener('click', () => {
     socket.emit('logout');
-    resetToLogin();
+    resetToJoin();
 });
 
 socket.on('disconnect', () => {
     if (currentUser) {
-        resetToLogin();
+        resetToJoin();
+        showAlert(joinAlert, '⏱ Disconnected from server.', 'error');
     }
 });
 
-function resetToLogin() {
+function resetToJoin() {
     currentUser = null;
+    currentRoom = null;
     // Clear messages except welcome
     messagesArea.innerHTML = `
         <div class="welcome-msg">
             <div class="welcome-icon">🔒</div>
-            <p>This is an ephemeral session. Messages are not stored. Once you disconnect, your session ends.</p>
+            <p>This is a live session. Messages are not stored. Once you disconnect, your session ends.</p>
         </div>`;
-    showScreen('login');
-    showAlert(loginAlert, '⏱ Session ended. Please log in again to rejoin.', 'error');
+    showScreen('join');
 }
 
 // ===========================
@@ -186,7 +143,7 @@ socket.on('chat_message', (data) => {
 
     // --- Countdown Timer ---
     const DURATION = 10;
-    const circumference = 38; // matches stroke-dasharray in CSS
+    const circumference = 38;
 
     const timerEl = document.createElement('div');
     timerEl.className = 'msg-timer';
@@ -204,7 +161,6 @@ socket.on('chat_message', (data) => {
     const ringProgress = timerEl.querySelector('.ring-progress');
     const secondsDisplay = timerEl.querySelector('.timer-seconds');
 
-    // Build message DOM
     if (isOwn) {
         row.appendChild(bubble);
         row.appendChild(meta);
@@ -215,24 +171,20 @@ socket.on('chat_message', (data) => {
         row.appendChild(timerEl);
     }
 
-    // Remove welcome message if present
     const welcome = messagesArea.querySelector('.welcome-msg');
     if (welcome) welcome.remove();
 
     messagesArea.appendChild(row);
     messagesArea.scrollTop = messagesArea.scrollHeight;
 
-    // Run countdown
     let remaining = DURATION;
     const interval = setInterval(() => {
         remaining--;
         secondsDisplay.textContent = `${remaining}s`;
 
-        // Update ring
         const offset = circumference * (1 - remaining / DURATION);
         ringProgress.style.strokeDashoffset = offset;
 
-        // Color warnings
         if (remaining <= 3) {
             ring.className = 'timer-ring danger';
             secondsDisplay.className = 'timer-seconds danger';
@@ -243,7 +195,6 @@ socket.on('chat_message', (data) => {
 
         if (remaining <= 0) {
             clearInterval(interval);
-            // Direct JS transition — more reliable than CSS animation class
             row.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
             row.style.opacity = '0';
             row.style.transform = 'translateY(-10px) scale(0.95)';
@@ -264,3 +215,23 @@ socket.on('system_message', (msg) => {
 socket.on('online_count', (count) => {
     onlineCount.textContent = `${count} online`;
 });
+
+// ===========================
+//   Mobile Sidebar Toggle
+// ===========================
+const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+const sidebar = document.querySelector('.sidebar');
+
+if (mobileMenuBtn && sidebar) {
+    mobileMenuBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768) {
+            if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                sidebar.classList.remove('show');
+            }
+        }
+    });
+}
