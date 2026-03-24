@@ -10,6 +10,11 @@ const io = new Server(server);
 // Serve Static Files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Ping Endpoint for Uptime Monitoring (Cron-Job.org / UptimeRobot)
+app.get('/ping', (req, res) => {
+    res.status(200).send('pong');
+});
+
 // Socket.io Logic
 io.on('connection', (socket) => {
     let currentUser = null;
