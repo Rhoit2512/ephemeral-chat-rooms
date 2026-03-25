@@ -612,6 +612,49 @@ input::placeholder { color: var(--text-muted); }
     transform: scale(1.05);
 }
 
+/* File Sharing */
+.btn-attachment {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+.btn-attachment:hover {
+    color: var(--accent);
+    background: rgba(255,255,255,0.05);
+}
+
+.chat-image {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-top: 6px;
+    cursor: pointer;
+}
+
+.chat-file {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,0,0,0.2);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 6px;
+    color: var(--text);
+    text-decoration: none;
+    border: 1px solid var(--border);
+    font-size: 0.85rem;
+}
+.chat-file:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+}
+
 /* ===========================
    Responsive & Mobile
 =========================== */

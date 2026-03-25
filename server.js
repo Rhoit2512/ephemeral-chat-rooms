@@ -5,7 +5,9 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    maxHttpBufferSize: 1e7 // Allow 10MB payloads for Base64 files
+});
 
 // Serve Static Files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -55,6 +57,19 @@ io.on('connection', (socket) => {
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
         io.to(currentRoom).emit('chat_message', msg);
+    });
+
+    // Chat File
+    socket.on('chat_file', (fileData) => {
+        if (!currentUser || !currentRoom) return;
+        const msg = {
+            username: currentUser,
+            fileName: fileData.fileName,
+            fileType: fileData.fileType,
+            data: fileData.data, // Base64 chunk
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        io.to(currentRoom).emit('chat_file', msg);
     });
 
     // Logout
