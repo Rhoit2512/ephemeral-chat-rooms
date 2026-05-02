@@ -37,6 +37,14 @@
                         <label for="join-roomcode">Room Code</label>
                         <input type="text" id="join-roomcode" placeholder="Enter a secret room code" autocomplete="off">
                     </div>
+                    <div class="field" id="roomexpiry-field">
+                        <label for="join-roomexpiry">Room Expiry</label>
+                        <select id="join-roomexpiry" class="timer-select" style="width: 100%; border-radius: 16px; padding: 14px 18px; font-size: 0.95rem; background: rgba(0,0,0,0.25);">
+                            <option value="1">1 Hour</option>
+                            <option value="12" selected>12 Hours</option>
+                            <option value="24">24 Hours</option>
+                        </select>
+                    </div>
                     <button type="submit" class="btn btn-primary" id="join-btn">Create & Join</button>
                 </form>
             </div>
@@ -89,6 +97,8 @@
                             <p>This is a live session. Messages are not stored. Once you disconnect, your session ends.</p>
                         </div>
                     </div>
+                    
+                    <div id="typing-indicator" class="typing-indicator hidden"></div>
 
                     <div class="chat-input-bar">
                         <form id="chat-form">
@@ -103,6 +113,10 @@
                                 <option value="30">30s</option>
                                 <option value="60">60s</option>
                             </select>
+                            <label class="burn-label" title="Burn-on-Read">
+                                <input type="checkbox" id="burn-checkbox">
+                                <span>🔥</span>
+                            </label>
                             <input type="text" id="message-input" placeholder="Type a message..." required autocomplete="off">
                             <button type="submit" class="btn btn-send">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
