@@ -25,6 +25,7 @@ const topbarRoomName  = document.getElementById('topbar-room-name');
 const btnLogout       = document.getElementById('btn-logout');
 const messagesArea    = document.getElementById('messages-area');
 const chatForm        = document.getElementById('chat-form');
+const timerSelect     = document.getElementById('timer-select');
 const messageInput    = document.getElementById('message-input');
 const onlineCount     = document.getElementById('online-count');
 
@@ -161,7 +162,8 @@ chatForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const msg = messageInput.value.trim();
     if (!msg) return;
-    socket.emit('chat_message', msg);
+    const duration = parseInt(timerSelect.value, 10) || 10;
+    socket.emit('chat_message', { text: msg, duration: duration });
     messageInput.value = '';
     messageInput.focus();
 });
@@ -182,7 +184,7 @@ socket.on('chat_message', (data) => {
         : `<span><strong>${data.username}</strong></span><span>${data.time}</span>`;
 
     // --- Countdown Timer ---
-    const DURATION = 10;
+    const DURATION = data.duration || 10;
     const circumference = 38;
 
     const timerEl = document.createElement('div');
@@ -269,10 +271,12 @@ if (attachmentBtn && fileInput) {
 
         const reader = new FileReader();
         reader.onload = (evt) => {
+            const duration = parseInt(document.getElementById('timer-select').value, 10) || 10;
             socket.emit('chat_file', {
                 fileName: file.name,
                 fileType: file.type,
-                data: evt.target.result
+                data: evt.target.result,
+                duration: duration
             });
             attachmentBtn.innerHTML = btnIcon;
             attachmentBtn.disabled = false;
@@ -307,7 +311,7 @@ socket.on('chat_file', (data) => {
         : `<span><strong>${data.username}</strong></span><span>${data.time}</span>`;
 
     // --- Countdown Timer ---
-    const DURATION = 10;
+    const DURATION = data.duration || 10;
     const circumference = 38;
 
     const timerEl = document.createElement('div');

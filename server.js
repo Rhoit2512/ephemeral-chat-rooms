@@ -49,11 +49,12 @@ io.on('connection', (socket) => {
     });
 
     // Chat Message
-    socket.on('chat_message', (text) => {
+    socket.on('chat_message', (data) => {
         if (!currentUser || !currentRoom) return;
         const msg = {
             username: currentUser,
-            text: (text || '').slice(0, 1000), // sanitize
+            text: (data.text || '').slice(0, 1000), // sanitize
+            duration: data.duration || 10,
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
         io.to(currentRoom).emit('chat_message', msg);
@@ -67,6 +68,7 @@ io.on('connection', (socket) => {
             fileName: fileData.fileName,
             fileType: fileData.fileType,
             data: fileData.data, // Base64 chunk
+            duration: fileData.duration || 10,
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
         io.to(currentRoom).emit('chat_file', msg);

@@ -583,6 +583,27 @@ input::placeholder { color: var(--text-muted); }
     align-items: center;
 }
 
+.timer-select {
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 12px;
+    padding: 10px;
+    font-size: 0.85rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.timer-select:hover, .timer-select:focus {
+    border-color: var(--accent);
+    color: var(--text);
+}
+.timer-select option {
+    background: #141423;
+    color: var(--text);
+}
+
 .chat-input-bar input {
     flex: 1;
     margin: 0;
