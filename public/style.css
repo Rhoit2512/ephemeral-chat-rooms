@@ -8,17 +8,17 @@
 }
 
 :root {
-    --bg: #0f0f13;
-    --surface: rgba(255,255,255,0.03);
-    --surface-hover: rgba(255,255,255,0.06);
-    --border: rgba(255,255,255,0.06);
-    --accent: #8b6dff;
-    --accent2: #5c9aff;
-    --accent-grad: linear-gradient(135deg, #8b6dff, #5c9aff);
-    --text: #f0f0f6;
-    --text-muted: #8b8b9e;
-    --danger: #ff6b6b;
-    --success: #6be09e;
+    --bg: #0f172a;
+    --surface: rgba(255,255,255,0.05);
+    --surface-hover: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.08);
+    --accent: #10b981;
+    --accent2: #059669;
+    --accent-grad: linear-gradient(135deg, #10b981, #059669);
+    --text: #f8fafc;
+    --text-muted: #94a3b8;
+    --danger: #ef4444;
+    --success: #10b981;
     --sidebar-w: 280px;
 }
 
@@ -40,12 +40,12 @@ a:hover { text-decoration: underline; }
 .orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(90px);
-    opacity: 0.2;
+    filter: blur(100px);
+    opacity: 0.15;
 }
-.orb1 { width: 500px; height: 500px; background: #7c4dff; top: -150px; left: -100px; animation: drift 12s ease-in-out infinite alternate; }
-.orb2 { width: 400px; height: 400px; background: #448aff; bottom: -100px; right: -80px; animation: drift 16s ease-in-out infinite alternate-reverse; }
-.orb3 { width: 300px; height: 300px; background: #ea80fc; top: 50%; left: 50%; transform: translate(-50%,-50%); animation: drift 10s ease-in-out infinite alternate; }
+.orb1 { width: 600px; height: 600px; background: #34d399; top: -150px; left: -100px; animation: drift 14s ease-in-out infinite alternate; }
+.orb2 { width: 500px; height: 500px; background: #3b82f6; bottom: -100px; right: -80px; animation: drift 18s ease-in-out infinite alternate-reverse; }
+.orb3 { width: 400px; height: 400px; background: #0ea5e9; top: 50%; left: 50%; transform: translate(-50%,-50%); animation: drift 12s ease-in-out infinite alternate; }
 
 @keyframes drift {
     from { transform: translateY(0) scale(1); }
@@ -583,6 +583,13 @@ input::placeholder { color: var(--text-muted); }
     align-items: center;
 }
 
+.timer-label {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    margin-right: -4px;
+}
+
 .timer-select {
     background: rgba(0,0,0,0.25);
     border: 1px solid var(--border);
@@ -777,7 +784,7 @@ input::placeholder { color: var(--text-muted); }
         display: flex;
     }
 
-    .ephem-badge {
+    .ephem-badge, .timer-label {
         display: none;
     }
 
