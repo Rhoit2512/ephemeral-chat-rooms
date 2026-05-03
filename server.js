@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
     };
 
     // Join Room
-    socket.on('join_room', ({ nickname, roomHash, roomExpiry, sessionId }, callback) => {
+    socket.on('join_room', ({ action, nickname, roomHash, roomExpiry, sessionId }, callback) => {
         nickname = (nickname || '').trim();
         roomHash = (roomHash || '').trim();
 
@@ -52,6 +52,10 @@ io.on('connection', (socket) => {
 
         // Room Expiry logic
         if (!roomsState.has(roomHash)) {
+            if (action === 'join') {
+                return callback({ success: false, message: 'room has not been created' });
+            }
+
             const expiryMs = (roomExpiry || 12) * 60 * 60 * 1000;
             const timer = setTimeout(() => {
                 io.to(roomHash).emit('room_expired');

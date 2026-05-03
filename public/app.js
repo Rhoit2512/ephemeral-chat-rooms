@@ -204,6 +204,7 @@ joinForm.addEventListener('submit', async (e) => {
     unhashedRoomCode = roomCode;
 
     socket.emit('join_room', { 
+        action: originalJoinMode,
         nickname, 
         roomHash, 
         roomExpiry, 
@@ -266,6 +267,7 @@ function resetToJoin() {
         <div class="welcome-msg">
             <div class="welcome-icon">🔒</div>
             <p>This is an End-to-End Encrypted live session. Messages are not stored. Once you disconnect, your session ends.</p>
+            <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;"><strong>Tip:</strong> Use the 🔥 button to send "Burn-on-Read" messages. They remain hidden until the recipient clicks them, then disappear after the timer ends.</p>
         </div>`;
     showScreen('join');
 }
